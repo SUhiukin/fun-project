@@ -1,0 +1,61 @@
+from pyecharts import Map,Geo
+from pyecharts import option as opts
+
+from pyecharts import EffectScatter
+
+
+import requests
+   
+import json
+
+url = "https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5"
+
+data = json.loads(requests.get(url=url).json()["data"])
+
+china = data["areaTree"][0]["children"]
+
+city = []
+
+for m in range(len(china)):
+    for m2 in range(len(china[m]["children"])):
+        
+        city.append(  tuple( [china[m]["children"][m2]["name"],china[m]["children"][m2]["total"]["confirm"]] )  )
+    
+#data = []
+a = []
+#省份
+total = 0
+
+for i in range(len(china)):
+#    ("海门", 9)
+    ci =  tuple([china[i]["name"],china[i]["total"]["confirm"]])
+    a.append(ci)
+    
+    total += china[i]["total"]["confirm"]
+    
+#
+#
+#
+#
+geo = Geo(
+    "全国主要城市肺炎情况",
+#    "data from pm2.5",
+    title_color="#fff",
+    title_pos="center",
+    width=1200,
+    height=600,
+    background_color="#404a59",
+)
+attr, value = geo.cast(city)
+geo.add(
+    "",
+    attr,
+    value,
+    visual_range=[0, 200],
+    visual_text_color="#fff",
+    symbol_size=5,
+    is_visualmap=True,
+    effect_scale=5,
+    type="effectScatter"
+)
+geo.render()
