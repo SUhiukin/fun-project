@@ -1,3 +1,8 @@
+环境版本：
+python3.4
+pyechart:0.1.9.4
+其他直接pip install
+
 from pyecharts import Map,Geo
 from pyecharts import option as opts
 
