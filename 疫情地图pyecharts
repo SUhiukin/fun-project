@@ -1,7 +1,13 @@
-环境版本：
-python3.4
-pyechart:0.1.9.4
-其他直接pip install
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Feb 12 22:12:10 2020
+
+@author: Administrator
+"""
+
+#全国疫情数据
+
+
 
 from pyecharts import Map,Geo
 from pyecharts import option as opts
@@ -32,7 +38,6 @@ a = []
 total = 0
 
 for i in range(len(china)):
-#    ("海门", 9)
     ci =  tuple([china[i]["name"],china[i]["total"]["confirm"]])
     a.append(ci)
     
@@ -40,27 +45,82 @@ for i in range(len(china)):
     
 #
 #
-#
-#
-geo = Geo(
-    "全国主要城市肺炎情况",
-#    "data from pm2.5",
-    title_color="#fff",
-    title_pos="center",
-    width=1200,
-    height=600,
-    background_color="#404a59",
-)
-attr, value = geo.cast(city)
-geo.add(
-    "",
-    attr,
-    value,
-    visual_range=[0, 200],
-    visual_text_color="#fff",
-    symbol_size=5,
-    is_visualmap=True,
-    effect_scale=5,
-    type="effectScatter"
-)
-geo.render()
+    
+#广东省今日死亡率 和 全国今日死亡率  柱状对比
+    
+GD_dead_rate = float(china[1]["total"]["deadRate"])
+
+China_daed_rate = float(data["areaTree"][0]["total"]["deadRate"])
+
+
+len_deaddaily = len(data["dailyDeadRateHistory"])
+China_not_HB_deadrate = float(data["dailyDeadRateHistory"][len_deaddaily-1]["notHubeiRate"])
+China_HB_deadrate = float(data["dailyDeadRateHistory"][len_deaddaily-1]["hubeiRate"])
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import font_manager
+
+
+my_font = font_manager.FontProperties(fname = 'C:\Windows\Fonts\msyh.ttc')
+
+
+plt.rcParams['axes.facecolor'] = 'whitesmoke'
+
+x = np.arange(4)
+y = [China_HB_deadrate,China_daed_rate,China_not_HB_deadrate,GD_dead_rate]
+
+tick_label=['湖北死亡率','全国死亡率','非湖北死亡率','广东死亡率']
+
+
+bar_width=0.5
+
+plt.xticks(x+bar_width/2,tick_label,fontproperties = my_font)#设置x轴的标签
+
+#plt.xlim(-0.5,4)
+#plt.ylim(0,3)
+
+plt.grid()
+
+plt.bar(x,y,bar_width,color=['grey','grey','grey','orange'])
+
+x_label=['广东死亡率','全国死亡率','全国死亡率(非湖北)','湖北死亡率']
+
+#以下是加数字
+
+rects = plt.bar(x,y,bar_width,color=['grey','grey','grey','orange'])
+
+for rect in rects:
+    height = rect.get_height()
+    plt.text(rect.get_x() + rect.get_width() /2 ,
+             height+0.1,str(height),ha="center")
+
+plt.annotate('广东分析', xy=(2, 1), xytext=(2.5, 2),fontproperties = my_font,fontsize=20)
+
+plt.show()             
+    
+#中国地图
+
+#geo = Geo(
+#    "全国主要城市肺炎情况",
+##    "data from pm2.5",
+#    title_color="#fff",
+#    title_pos="center",
+#    width=1200,
+#    height=600,
+#    background_color="#404a59",
+#)
+#attr, value = geo.cast(city)
+#geo.add(
+#    "",
+#    attr,
+#    value,
+#    visual_range=[0, 200],
+#    visual_text_color="#fff",
+#    symbol_size=5,
+#    is_visualmap=True,
+#    effect_scale=5,
+#    type="effectScatter"
+#)
+#geo.render()
